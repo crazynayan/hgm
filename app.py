@@ -1,4 +1,8 @@
+import os
 from flask import Flask
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google-cloud.json"
+
 
 app = Flask(__name__)
 
