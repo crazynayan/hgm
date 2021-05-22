@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>
+        {% block title %}
+            {% if title %}
+                HGM - {{ title }}
+            {% else %}
+                Hearthstone Grandmasters 2021
+            {% endif %}
+        {% endblock title %}
+    </title>
+    <!-- Bootstrap -->
+    <!--suppress SpellCheckingInspection -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- DataTable -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+    <!-- Open Iconic -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+<!-- NavBar -->
+<div class="container-xl">
+    <nav class="navbar navbar-dark bg-dark navbar-expand-md fixed-top">
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='brand.png') }}" alt="FS" width="30" height="30" class="">
+        </a>
+        <!--suppress SpellCheckingInspection -->
+        <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
+            <!--suppress SpellCheckingInspection -->
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <div class="navbar-nav mr-auto">
+                {#                {%- if current_user.is_authenticated %}#}
+                <a class="nav-item nav-link {% if request.url_rule.endpoint == 'home' %}active{% endif %}"
+                   href="{{ url_for('home') }}" title="Dashboard">
+                    <span class="oi oi-dashboard"></span> Play
+                </a>
+                <a class="nav-item nav-link {% if request.url_rule.endpoint == 'home' %}active{% endif %}"
+                   href="{{ url_for('home') }}" title="Event Data Entry">
+                    <span class="oi oi-task"></span> Standings
+                </a>
+                <a class="nav-item nav-link {% if request.url_rule.endpoint == 'home' %}active{% endif %}"
+                   href="{{ url_for('home') }}" title="Main Report">
+                    <span class="oi oi-spreadsheet"></span> Results
+                </a>
+                {#                {%- endif %}#}
+            </div>
+            <div class="navbar-nav ml-auto">
+                {#                {%- if current_user.is_anonymous %}#}
+                <a class="nav-item nav-link active" href="{{ url_for('home') }}" title="Login">
+                    <span class="oi oi-account-login"></span> Login
+                </a>
+                {#                {%- else %}#}
+                {#                    <a class="nav-item nav-link" href="{{ url_for('logout') }}" title="Logout">#}
+                {#                        <span class="oi oi-account-logout"></span> Logout#}
+                {#                    </a>#}
+                {#                {%- endif %}#}
+            </div>
+        </div>
+    </nav>
+</div>
+<!-- Macro to render all types of form fields -->
+{%- macro render_field(field) %}
+    {%- if field.type == "FileField" %}
+        <div class="custom-file">
+            {{ field(class_="custom-file-input") }}
+            <label for="{{ field.id }}" class="custom-file-label">{{ field.label }}</label>
+        </div>
+    {%- elif field.type == "RadioField" %}
+        <div id="{{ field.id }}">
+            {{ field.label }}
+            {% for value, label in field.choices %}
+                <div class="custom-control custom-radio">
+                    <input class="custom-control-input" type="radio" id="{{ field.id + '-' + loop.index|string }}"
+                           name="{{ field.name }}" value="{{ value }}" {% if field.data == value %} checked {% endif %}>
+                    <label class="custom-control-label"
+                           for="{{ field.id + '-' + loop.index|string }}">{{ label }}</label>
+                </div>
+            {% endfor %}
+            <br>
+        </div>
+    {%- elif field.type == "BooleanField" %}
+        <div class="custom-control custom-checkbox">
+            {{ field(class_="custom-control-input") }}
+            <label for="{{ field.id }}" class="custom-control-label">{{ field.label }}</label>
+        </div>
+    {%- elif field.type in ("HiddenField", "CSRFTokenField") %}
+        {{ field() }}
+    {%- elif field.type == "SubmitField" %}
+        <br>
+        {{ field(class_="btn btn-primary") }}
+    {%- else %}
+        <div class="form-group required">
+            <label for="{{ field.id }}" class="form-control-label">{{ field.label }}</label>
+            {{ field(class_="formcontrol") }}
+        </div>
+    {%- endif %}
+{%- endmacro %}
+
+{%- block content %}
+    <div class="container-xl" id="pad-content">
+        {%- with messages = get_flashed_messages() %}
+            {%- if messages %}
+                <br>
+                {%- for message in messages %}
+                    <div class="alert alert-info" role="alert">
+                        {{ message }}
+                    </div>
+                {%- endfor %}
+            {%- endif %}
+        {%- endwith %}
+        <br>
+        {%- block app_content %}
+        {%- endblock %}
+    </div>
+{%- endblock %}
+
+{% block scripts %}
+    <!-- Bootstrap Google -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <!--suppress SpellCheckingInspection -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <!--suppress SpellCheckingInspection -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <!-- Data Table -->
+    <script charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"
+            type="text/javascript"></script>
+    <!-- Default Data Table, JSCheckFunctionSignatures -->
+    <!--suppress JSUnresolvedVariable, JSCheckFunctionSignatures -->
+    <script>
+        $.extend($.fn.dataTable.defaults, {
+            dom: '<"top"if>rt<"bottom"p>'
+        })
+    </script>
+    <!-- Custom Scripting -->
+{%- endblock scripts %}
+
+</body>
+</html>
