@@ -2,10 +2,9 @@ import os
 from flask import Flask
 from flask_login import LoginManager
 
-from config import Config
-
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "google-cloud.json"
 
+from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)

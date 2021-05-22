@@ -48,3 +48,17 @@ class User(FirestoreDocument, UserMixin):
 
 
 User.init()
+
+
+class Player(FirestoreDocument):
+
+    def __init__(self):
+        super().__init__()
+        self.name: str = str()
+        self.points: int = int()
+        self.region: str = str()
+        self.season: str = str()
+        self.rank: int = int()
+
+
+Player().init()
