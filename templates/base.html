@@ -58,15 +58,15 @@
                 {#                {%- endif %}#}
             </div>
             <div class="navbar-nav ml-auto">
-                {#                {%- if current_user.is_anonymous %}#}
-                <a class="nav-item nav-link active" href="{{ url_for('home') }}" title="Login">
-                    <span class="oi oi-account-login"></span> Login
-                </a>
-                {#                {%- else %}#}
-                {#                    <a class="nav-item nav-link" href="{{ url_for('logout') }}" title="Logout">#}
-                {#                        <span class="oi oi-account-logout"></span> Logout#}
-                {#                    </a>#}
-                {#                {%- endif %}#}
+                {%- if current_user.is_anonymous %}
+                    <a class="nav-item nav-link active" href="{{ url_for('login') }}" title="Login">
+                        <span class="oi oi-account-login"></span> Login
+                    </a>
+                {%- else %}
+                    <a class="nav-item nav-link" href="{{ url_for('logout') }}" title="Logout">
+                        <span class="oi oi-account-logout"></span> Logout
+                    </a>
+                {%- endif %}
             </div>
         </div>
     </nav>
