@@ -1,4 +1,5 @@
 import os
+
 from flask import Flask
 from flask_login import LoginManager
 
@@ -16,10 +17,12 @@ login.session_protection = "strong" if Config.CI_SECURITY else "basic"
 @app.shell_context_processor
 def make_shell_context():
     from models import Player
+    import methods
     return {
         "User": User,
         "Player": Player,
         "Config": Config,
+        "methods": methods
     }
 
 

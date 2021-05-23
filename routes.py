@@ -9,7 +9,7 @@ from app import app
 from config import Config
 from forms import LoginForm
 from methods import check_token
-from models import User, Player
+from models import User, Player, Group
 
 
 def cookie_login_required(route_function):
@@ -41,6 +41,19 @@ def standings(region: str):
     players: List[Player] = Player.objects.filter_by(region=my_region, season=user.season).get()
     players.sort(key=lambda player: player.rank)
     return render_template("standings.html", title="Standings", region=my_region, season=user.season, players=players)
+
+
+@app.route("/results/<region>/<int:week>")
+@cookie_login_required
+def results(region: str, week: int):
+    user: User = current_user
+    groups: List[Group] = Group.objects.filter_by(region=region, week=week, season=user.season).get()
+    group_a = [player for player in groups if player.group == Config.GROUP_A]
+    group_b = [player for player in groups if player.group == Config.GROUP_B]
+    group_c = [player for player in groups if player.group == Config.GROUP_C]
+    group_d = [player for player in groups if player.group == Config.GROUP_D]
+    return render_template("results.html", title="Results", region=region, season=user.season, week=week,
+                           max_weeks=user.week, group_a=group_a, group_b=group_b, group_c=group_c, group_d=group_d)
 
 
 @app.route("/login", methods=["GET", "POST"])

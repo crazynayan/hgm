@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2 class="text-center">Results {{ season }} - Week {{ week }} - {{ region }}</h2>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% for week_batch in range(1, max_weeks + 1)|batch(8) %}
+        <div class="row">
+            {% for number in week_batch %}
+                <div class="col-md-1">
+                    <a class="btn btn-block btn-primary" href="{{ url_for('results', week=number, region=region) }}">
+                        <span class="oi oi-calendar"></span> W-{{ week }}
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <br>
+    <div class="row">
+        <div class="col-md-4">
+            <a class="btn btn-block btn-primary text-white"
+               href="{{ url_for('results', week=week, region=config.APAC) }}">
+                <span class="oi oi-map"></span> {{ config.APAC }}
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-block btn-primary text-white"
+               href="{{ url_for('results', week=week, region=config.EUROPE) }}">
+                <span class="oi oi-map"></span> {{ config.EUROPE }}
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a class="btn btn-block btn-primary text-white"
+               href="{{ url_for('results', week=week, region=config.AMERICAS) }}">
+                <span class="oi oi-map"></span> {{ config.AMERICAS }}
+            </a>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" scope="col">{{ config.GROUP_A }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in group_a %}
+                    <tr>
+                        <td class="text-center">{{ player.player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" scope="col">{{ config.GROUP_B }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in group_b %}
+                    <tr>
+                        <td class="text-center">{{ player.player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" scope="col">{{ config.GROUP_C }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in group_c %}
+                    <tr>
+                        <td class="text-center">{{ player.player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-3">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" scope="col">{{ config.GROUP_D }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in group_d %}
+                    <tr>
+                        <td class="text-center">{{ player.player }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+{% endblock %}

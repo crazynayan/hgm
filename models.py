@@ -75,6 +75,7 @@ class Match(FirestoreDocument):
         self.season: str = str()
         self.region: str = str()
         self.week: int = int()
+        self.order: int = int()
         self.group: str = str()
         self.type: str = str()
         self.player1: str = str()

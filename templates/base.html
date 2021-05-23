@@ -52,7 +52,7 @@
                         <span class="oi oi-task"></span> Standings
                     </a>
                     <a class="nav-item nav-link {% if request.url_rule.endpoint == 'results' %}active{% endif %}"
-                       href="{{ url_for('home') }}" title="Results">
+                       href="{{ url_for('results', region=config.APAC, week=current_user.week) }}" title="Results">
                         <span class="oi oi-spreadsheet"></span> Results
                     </a>
                 {%- endif %}
