@@ -22,8 +22,6 @@ class Config:
                    QUARTERFINAL_4, SEMIFINAL_1, SEMIFINAL_2, FINAL)
 
 
-
-
 def _add_players(player_list: List[str], region: str) -> None:
     players: list = list()
     from models import Player

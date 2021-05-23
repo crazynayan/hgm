@@ -49,4 +49,3 @@ def check_token(token: str) -> Optional[User]:
     if user is None or user.token_expiration < datetime.utcnow().replace(tzinfo=pytz.UTC):
         return None
     return user
-

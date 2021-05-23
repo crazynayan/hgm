@@ -1,11 +1,10 @@
 import os
 from base64 import b64encode
-
-import pytz
 from datetime import datetime, timedelta
 
-from flask_login import UserMixin
+import pytz
 from firestore_ci import FirestoreDocument
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
@@ -84,6 +83,7 @@ class Match(FirestoreDocument):
 
     def __repr__(self):
         return f"{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
+
 
 Match().init()
 
