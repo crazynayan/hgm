@@ -72,6 +72,7 @@ class Match(FirestoreDocument):
 
     def __init__(self):
         super().__init__()
+        self.match_id: str = str()  # Unique ID for match across season, regions & weeks
         self.season: str = str()
         self.region: str = str()
         self.week: int = int()
@@ -83,10 +84,10 @@ class Match(FirestoreDocument):
         self.winner: str = str()
 
     def __repr__(self):
-        return f"{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
+        return f"{self.match_id}:{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
 
 
-Match().init()
+Match().init("matches")
 
 
 class Group(FirestoreDocument):

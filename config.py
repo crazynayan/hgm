@@ -12,6 +12,7 @@ class Config:
     APAC, EUROPE, AMERICAS = "Asia-Pacific", "Europe", "Americas"
     REGIONS = (APAC, EUROPE, AMERICAS)
     SEASON2021_1 = "2021 Season 1"
+    SEASON2021_1_TAG = "GW2021-1"
     GROUP_A, GROUP_B, GROUP_C, GROUP_D = "Group A", "Group B", "Group C", "Group D"
     GROUPS = (GROUP_A, GROUP_B, GROUP_C, GROUP_D)
     INITIAL_1, INITIAL_2, QUALIFIER, ELIMINATOR = "Initial 1", "Initial 2", "Qualifier", "Eliminator"

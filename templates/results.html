@@ -14,7 +14,7 @@
             {% for number in week_batch %}
                 <div class="col-md-1">
                     <a class="btn btn-block btn-primary" href="{{ url_for('results', week=number, region=region) }}">
-                        <span class="oi oi-calendar"></span> W-{{ week }}
+                        <span class="oi oi-calendar"></span> W-{{ number }}
                     </a>
                 </div>
             {% endfor %}
