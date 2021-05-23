@@ -86,6 +86,22 @@ class Match(FirestoreDocument):
     def __repr__(self):
         return f"{self.match_id}:{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
 
+    def _get_class(self, player: str) -> str:
+        if player == self.winner:
+            return "table-success"
+        elif self.winner == str():
+            return "table-warning"
+        else:
+            return "table-danger"
+
+    @property
+    def player1_class(self) -> str:
+        return self._get_class(self.player1)
+
+    @property
+    def player2_class(self) -> str:
+        return self._get_class(self.player2)
+
 
 Match().init("matches")
 

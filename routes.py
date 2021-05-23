@@ -9,7 +9,7 @@ from app import app
 from config import Config
 from forms import LoginForm
 from methods import check_token
-from models import User, Player, Group
+from models import User, Player, Group, Match
 
 
 def cookie_login_required(route_function):
@@ -47,13 +47,18 @@ def standings(region: str):
 @cookie_login_required
 def results(region: str, week: int):
     user: User = current_user
-    groups: List[Group] = Group.objects.filter_by(region=region, week=week, season=user.season).get()
-    group_a = [player for player in groups if player.group == Config.GROUP_A]
-    group_b = [player for player in groups if player.group == Config.GROUP_B]
-    group_c = [player for player in groups if player.group == Config.GROUP_C]
-    group_d = [player for player in groups if player.group == Config.GROUP_D]
-    return render_template("results.html", title="Results", region=region, season=user.season, week=week,
-                           max_weeks=user.week, group_a=group_a, group_b=group_b, group_c=group_c, group_d=group_d)
+    grouped_players: List[Group] = Group.objects.filter_by(region=region, week=week, season=user.season).get()
+    match_players: List[Match] = Match.objects.filter_by(region=region, week=week, season=user.season).get()
+    match_players.sort(key=lambda match: match.match_id)
+    groups: List[List[Group]] = list()
+    matches: List[List[Match]] = list()
+    for group_index in range(0, 4):
+        groups.append([player for player in grouped_players if player.group == Config.GROUPS[group_index]])
+        matches.append([match for match in match_players if match.group == Config.GROUPS[group_index]])
+    quarterfinals: List[Match] = [match for match in match_players if match.type in Config.QUARTERFINALS]
+    finals: List[Match] = [match for match in match_players if match.type in Config.FINALS]
+    return render_template("results.html", title="Results", region=region, season=user.season, week=week, finals=finals,
+                           max_weeks=user.week, groups=groups, group_matches=matches, quarterfinals=quarterfinals, )
 
 
 @app.route("/login", methods=["GET", "POST"])

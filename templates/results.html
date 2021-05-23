@@ -42,71 +42,52 @@
         </div>
     </div>
     <br>
+    {% for group_matches_batch in group_matches|batch(2) %}
+        <div class="row">
+            {% for matches in group_matches_batch %}
+                <div class="col-md-6">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center" colspan=4 scope="col">{{ matches[0].group }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for match in matches %}
+                            <tr>
+                                <td class="text-center">{{ match.order }}</td>
+                                <td class="text-center">{{ match.type }}</td>
+                                <td class="text-center {{ match.player1_class }}">{{ match.player1 }}</td>
+                                <td class="text-center {{ match.player2_class }}">{{ match.player2 }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            {% endfor %}
+        </div>
+        <br>
+    {% endfor %}
     <div class="row">
-        <div class="col-md-3">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                <tr>
-                    <th class="text-center" scope="col">{{ config.GROUP_A }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for player in group_a %}
+        {% for group in groups %}
+            <div class="col-md-3">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead class="thead-dark">
                     <tr>
-                        <td class="text-center">{{ player.player }}</td>
+                        <th class="text-center" scope="col">{{ group[0].group }}</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-3">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                <tr>
-                    <th class="text-center" scope="col">{{ config.GROUP_B }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for player in group_b %}
-                    <tr>
-                        <td class="text-center">{{ player.player }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-3">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                <tr>
-                    <th class="text-center" scope="col">{{ config.GROUP_C }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for player in group_c %}
-                    <tr>
-                        <td class="text-center">{{ player.player }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="col-md-3">
-            <table class="table table-bordered table-hover">
-                <thead class="thead-dark">
-                <tr>
-                    <th class="text-center" scope="col">{{ config.GROUP_D }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for player in group_d %}
-                    <tr>
-                        <td class="text-center">{{ player.player }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                    {% for player in group %}
+                        <tr>
+                            <td class="text-center">{{ player.player }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
     </div>
     <br>
 {% endblock %}
