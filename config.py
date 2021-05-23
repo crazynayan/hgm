@@ -12,6 +12,16 @@ class Config:
     APAC, EUROPE, AMERICAS = "Asia-Pacific", "Europe", "Americas"
     REGIONS = (APAC, EUROPE, AMERICAS)
     SEASON2021_1 = "2021 Season 1"
+    GROUP_A, GROUP_B, GROUP_C, GROUP_D = "Group A", "Group B", "Group C", "Group D"
+    GROUPS = (GROUP_A, GROUP_B, GROUP_C, GROUP_D)
+    INITIAL_1, INITIAL_2, QUALIFIER, ELIMINATOR = "Initial 1", "Initial 2", "Qualifier", "Eliminator"
+    DECIDER, QUARTERFINAL_1, QUARTERFINAL_2 = "Decider", "Quarterfinal 1", "Quarterfinal 2"
+    QUARTERFINAL_3, QUARTERFINAL_4 = "Quarterfinal 3", "Quarterfinal 4"
+    SEMIFINAL_1, SEMIFINAL_2, FINAL = "Semifinal 1", "Semifinal 2", "Final"
+    MATCH_TYPES = (INITIAL_1, INITIAL_2, QUALIFIER, ELIMINATOR, DECIDER, QUARTERFINAL_1, QUARTERFINAL_2, QUARTERFINAL_3,
+                   QUARTERFINAL_4, SEMIFINAL_1, SEMIFINAL_2, FINAL)
+
+
 
 
 def _add_players(player_list: List[str], region: str) -> None:

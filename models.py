@@ -18,7 +18,8 @@ class User(FirestoreDocument, UserMixin):
         self.username: str = str()
         self.password_hash: str = str()
         self.token: str = str()
-        self.season:str = Config.SEASON2021_1
+        self.season: str = str()
+        self.week: int = int()
         self.token_expiration: datetime = datetime.utcnow().replace(tzinfo=pytz.UTC)
 
     def __repr__(self) -> str:
@@ -61,5 +62,44 @@ class Player(FirestoreDocument):
         self.season: str = str()
         self.rank: int = int()
 
+    def __repr__(self):
+        return f"{self.name}:{self.region}:{self.points}"
+
 
 Player().init()
+
+
+class Match(FirestoreDocument):
+
+    def __init__(self):
+        super().__init__()
+        self.season: str = str()
+        self.region: str = str()
+        self.week: int = int()
+        self.group: str = str()
+        self.type: str = str()
+        self.player1: str = str()
+        self.player2: str = str()
+        self.winner: str = str()
+
+    def __repr__(self):
+        return f"{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
+
+Match().init()
+
+
+class Group(FirestoreDocument):
+
+    def __init__(self):
+        super().__init__()
+        self.season: str = str()
+        self.region: str = str()
+        self.week: int = int()
+        self.group: str = str()
+        self.player: str = str()
+
+    def __repr__(self):
+        return f"{self.region}:{self.week}:{self.group}:{self.player}"
+
+
+Group().init()
