@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="row">
+        <div class="col-md">
+            <div class="section-title">
+                <h2 class="text-center">{{ season }} - {{ region }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <br>
+            <div class="row">
+                <div class="col-md">
+                    <a class="btn btn-primary btn-block text-white"
+                       href="{{ url_for('standings', region=config.APAC) }}">
+                        <span class="oi oi-map"></span> {{ config.APAC }}
+                    </a>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md">
+                    <a class="btn btn-primary btn-block text-white"
+                       href="{{ url_for('standings', region=config.EUROPE) }}">
+                        <span class="oi oi-map"></span> {{ config.EUROPE }}
+                    </a>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md">
+                    <a class="btn btn-primary btn-block text-white"
+                       href="{{ url_for('standings', region=config.AMERICAS) }}">
+                        <span class="oi oi-map"></span> {{ config.AMERICAS }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-bordered table-hover table-sm">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" scope="col">Rank</th>
+                    <th class="" scope="col">Name</th>
+                    <th class="text-center" scope="col">Points</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td class="text-center">{{ player.rank }}</td>
+                        <td class="">{{ player.name }}</td>
+                        <td class="text-center">{{ player.points }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
+{% endblock %}

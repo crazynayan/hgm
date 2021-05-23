@@ -18,6 +18,7 @@ class User(FirestoreDocument, UserMixin):
         self.username: str = str()
         self.password_hash: str = str()
         self.token: str = str()
+        self.season:str = Config.SEASON2021_1
         self.token_expiration: datetime = datetime.utcnow().replace(tzinfo=pytz.UTC)
 
     def __repr__(self) -> str:
