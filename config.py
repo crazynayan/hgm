@@ -19,10 +19,23 @@ class Config:
     DECIDER, QUARTERFINAL_1, QUARTERFINAL_2 = "Decider", "Quarterfinal 1", "Quarterfinal 2"
     QUARTERFINAL_3, QUARTERFINAL_4 = "Quarterfinal 3", "Quarterfinal 4"
     SEMIFINAL_1, SEMIFINAL_2, FINAL = "Semifinal 1", "Semifinal 2", "Final"
-    MATCH_TYPES = (INITIAL_1, INITIAL_2, QUALIFIER, ELIMINATOR, DECIDER, QUARTERFINAL_1, QUARTERFINAL_2, QUARTERFINAL_3,
-                   QUARTERFINAL_4, SEMIFINAL_1, SEMIFINAL_2, FINAL)
+    MATCH_TYPES = {
+        INITIAL_1: 1,
+        INITIAL_2: 2,
+        QUALIFIER: 3,
+        ELIMINATOR: 4,
+        DECIDER: 5,
+        QUARTERFINAL_1: 1,
+        QUARTERFINAL_2: 2,
+        QUARTERFINAL_3: 3,
+        QUARTERFINAL_4: 4,
+        SEMIFINAL_1: 1,
+        SEMIFINAL_2: 2,
+        FINAL: 3
+    }
     QUARTERFINALS = (QUARTERFINAL_1, QUARTERFINAL_2, QUARTERFINAL_3, QUARTERFINAL_4)
     FINALS = (SEMIFINAL_1, SEMIFINAL_2, FINAL)
+    TBD = "To Be Decided"
 
 
 def _add_players(player_list: List[str], region: str) -> None:

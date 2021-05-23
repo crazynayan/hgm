@@ -42,6 +42,47 @@
         </div>
     </div>
     <br>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" colspan=4 scope="col">Finals</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for match in finals %}
+                    <tr>
+                        <td class="text-center">{{ match.order }}</td>
+                        <td class="text-center">{{ match.type }}</td>
+                        <td class="text-center {{ match.player1_class }}">{{ match.player1 }}</td>
+                        <td class="text-center {{ match.player2_class }}">{{ match.player2 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                <tr>
+                    <th class="text-center" colspan=4 scope="col">Quarterfinals</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for match in quarterfinals %}
+                    <tr>
+                        <td class="text-center">{{ match.order }}</td>
+                        <td class="text-center">{{ match.type }}</td>
+                        <td class="text-center {{ match.player1_class }}">{{ match.player1 }}</td>
+                        <td class="text-center {{ match.player2_class }}">{{ match.player2 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br>
     {% for group_matches_batch in group_matches|batch(2) %}
         <div class="row">
             {% for matches in group_matches_batch %}

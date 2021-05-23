@@ -76,7 +76,6 @@ class Match(FirestoreDocument):
         self.season: str = str()
         self.region: str = str()
         self.week: int = int()
-        self.order: int = int()
         self.group: str = str()
         self.type: str = str()
         self.player1: str = str()
@@ -85,6 +84,10 @@ class Match(FirestoreDocument):
 
     def __repr__(self):
         return f"{self.match_id}:{self.region}:{self.week}:{self.group}:{self.type}:{self.player1} v {self.player2}"
+
+    @property
+    def order(self) -> int:
+        return Config.MATCH_TYPES[self.type]
 
     def _get_class(self, player: str) -> str:
         if player == self.winner:

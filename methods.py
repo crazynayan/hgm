@@ -52,20 +52,74 @@ def create_initial_matches(season: str, week: int) -> None:
         for group_index in range(0, 4):
             group_players = [player for player in region_players if player.group == Config.GROUPS[group_index]]
             for player_index in range(0, 3, 2):
-                order_index = int(player_index / 2)
                 match = Match()
                 match.season = season
                 match.week = week
                 match.region = region
                 match.group = Config.GROUPS[group_index]
-                match.order = order_index + 1
-                match.type = Config.MATCH_TYPES[order_index]
+                match.type = Config.INITIAL_1 if player_index == 0 else Config.INITIAL_2
                 match.player1 = group_players[player_index].player
                 match.player2 = group_players[player_index + 1].player
-                match.match_id = f"{Config.SEASON2021_1_TAG}-{match_index:003}"
+                match.match_id = _generate_match_id(match_index)
                 match_index += 1
                 matches_to_create.append(match)
     Match.objects.create_all(Match.objects.to_dicts(matches_to_create))
+
+
+def create_tbd_matches(season: str, week: int) -> None:
+    if not (1 <= week <= 7):
+        return
+    matches: List[Match] = Match.objects.filter_by(season=season, week=week).get()
+    match_index = len(matches) + 1
+    if match_index != 25:
+        return
+    matches_to_create: List[Match] = list()
+    for region in Config.REGIONS:
+        for group_index in range(0, 4):
+            match = _create_tbd_match(season, week, region, Config.QUALIFIER, match_index, Config.GROUPS[group_index])
+            matches_to_create.append(match)
+            match_index += 1
+            match = _create_tbd_match(season, week, region, Config.ELIMINATOR, match_index, Config.GROUPS[group_index])
+            matches_to_create.append(match)
+            match_index += 1
+    for region in Config.REGIONS:
+        for group_index in range(0, 4):
+            match = _create_tbd_match(season, week, region, Config.DECIDER, match_index, Config.GROUPS[group_index])
+            matches_to_create.append(match)
+            match_index += 1
+    for region in Config.REGIONS:
+        for quarter_index in range(1, 5):
+            match = _create_tbd_match(season, week, region, f"{Config.QUARTERFINAL_1[:-1]}{quarter_index}", match_index)
+            matches_to_create.append(match)
+            match_index += 1
+    for region in Config.REGIONS:
+        match = _create_tbd_match(season, week, region, Config.SEMIFINAL_1, match_index)
+        matches_to_create.append(match)
+        match_index += 1
+        match = _create_tbd_match(season, week, region, Config.SEMIFINAL_2, match_index)
+        matches_to_create.append(match)
+        match_index += 1
+        match = _create_tbd_match(season, week, region, Config.FINAL, match_index)
+        matches_to_create.append(match)
+        match_index += 1
+    Match.objects.create_all(Match.objects.to_dicts(matches_to_create))
+
+
+def _create_tbd_match(season: str, week: int, region: str, match_type: str, index: int, group: str = None) -> Match:
+    match = Match()
+    match.season = season
+    match.week = week
+    match.region = region
+    match.type = match_type
+    match.match_id = _generate_match_id(index)
+    match.group = group if group else str()
+    match.player1 = Config.TBD
+    match.player2 = Config.TBD
+    return match
+
+
+def _generate_match_id(match_index: int) -> str:
+    return f"{Config.SEASON2021_1_TAG}-{match_index:003}"
 
 
 @login.user_loader
