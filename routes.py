@@ -7,8 +7,8 @@ from werkzeug.urls import url_parse
 
 from app import app
 from config import Config
-from forms import LoginForm
-from methods import check_token
+from forms import LoginForm, MatchForm
+from methods import check_token, get_next_match, prepare_for_next_week, update_winner
 from models import User, Player, Group, Match
 
 
@@ -31,6 +31,32 @@ def cookie_login_required(route_function):
 @app.route("/home")
 def home():
     return render_template("home.html")
+
+
+@app.route("/play", methods=["GET", "POST"])
+@cookie_login_required
+def play():
+    user: User = current_user
+    if not (1 <= user.week <= 7):
+        flash(f"Invalid week {user.week}")
+        return redirect(url_for("home"))
+    match: Match = get_next_match(user.season, user.week)
+    if match is None and user.week == 7:
+        flash("All 7 weeks completed. Please review the standings. Game Over")
+        return redirect(url_for("standings", region=Config.APAC))
+    if match is None:
+        prepare_for_next_week()
+        flash(f"Week {user.week} completed. You have been logged out. Login again to start next week")
+        return redirect(url_for("logout"))
+    form = MatchForm(match)
+    if not form.validate_on_submit():
+        return render_template("play.html", match=match, form=form, title="Play")
+    update_winner(match, winner=form.match_radio.data)
+    url = url_for("play")
+    if match.type in Config.REGION_CHANGE or \
+            (match.type in Config.GROUP_REGION_CHANGE and match.group == Config.GROUP_D):
+        url = url_for("results", region=match.region, week=match.week)
+    return redirect(url)
 
 
 @app.route("/standings/<region>")

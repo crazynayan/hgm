@@ -4,7 +4,14 @@
     <div class="row">
         <div class="col-md-8">
             <div class="section-title">
-                <h2></h2>
+                <h2>Results {{ match.season }} - Week {{ match.week }}</h2>
+                <p>
+                    {{ match.region }} -
+                    {% if match.group %}
+                        {{ match.group }} -
+                    {% endif %}
+                    {{ match.type }}
+                </p>
             </div>
         </div>
     </div>
@@ -13,8 +20,7 @@
         <div class="col-md-8">
             <form class="form" method="POST" id="login-form" enctype="multipart/form-data">
                 {{ render_field(form.csrf_token) }}
-                {{ render_field(form.username) }}
-                {{ render_field(form.password) }}
+                {{ render_field(form.match_radio) }}
                 {{ render_field(form.submit) }}
             </form>
         </div>

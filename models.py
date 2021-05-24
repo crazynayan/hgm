@@ -89,9 +89,24 @@ class Match(FirestoreDocument):
     def order(self) -> int:
         return Config.MATCH_TYPES[self.type]
 
+    @property
+    def number(self) -> int:
+        return int(self.match_id[-3:])
+
+    @property
+    def loser(self) -> str:
+        if self.winner == str():
+            return str()
+        elif self.winner == self.player1:
+            return self.player2
+        else:
+            return self.player1
+
     def _get_class(self, player: str) -> str:
         if player == self.winner:
             return "table-success"
+        elif player == Config.TBD:
+            return "table-secondary"
         elif self.winner == str():
             return "table-warning"
         else:

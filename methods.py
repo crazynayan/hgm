@@ -10,6 +10,106 @@ from errors import PlayerInRegionNot16, PlayerInGroupNot48
 from models import User, Group, Player, Match
 
 
+def update_standings(match: Match) -> None:
+    players: List[Player] = Player.objects.filter_by(season=match.season, region=match.region).get()
+    player = next(player for player in players if player.name == match.winner)
+    player.points += 1
+    players.sort(key=lambda item: (-item.points, item.name.upper()))
+    for index, player in enumerate(players):
+        player.rank = index + 1
+    Player.objects.save_all(players)
+
+
+def update_winner(match: Match, winner: str) -> None:
+    match.winner = winner
+    matches_to_update = [match]
+    if match.type == Config.INITIAL_1:
+        matches: List[Match] = _get_matches(match, Config.QUALIFIER, Config.ELIMINATOR)
+        matches[0].player1 = match.winner
+        matches[1].player1 = match.loser
+        matches_to_update.extend(matches)
+    elif match.type == Config.INITIAL_2:
+        matches: List[Match] = _get_matches(match, Config.QUALIFIER, Config.ELIMINATOR)
+        matches[0].player2 = match.winner
+        matches[1].player2 = match.loser
+        matches_to_update.extend(matches)
+    elif match.type == Config.QUALIFIER:
+        quarterfinal: Match = _get_match(match, Config.GROUP_TO_QUALIFIERS[match.group])
+        decider: Match = _get_match_from_group(match, Config.DECIDER)
+        quarterfinal.player1 = match.winner
+        decider.player1 = match.loser
+        matches_to_update.extend([quarterfinal, decider])
+    elif match.type == Config.ELIMINATOR:
+        decider: Match = _get_match_from_group(match, Config.DECIDER)
+        decider.player2 = match.winner
+        matches_to_update.append(decider)
+    elif match.type == Config.DECIDER:
+        quarterfinal: Match = _get_match(match, Config.GROUP_TO_DECIDERS[match.group])
+        quarterfinal.player2 = match.winner
+        matches_to_update.append(quarterfinal)
+    elif match.type == Config.QUARTERFINAL_1:
+        semifinal: Match = _get_match(match, Config.SEMIFINAL_1)
+        semifinal.player1 = match.winner
+        matches_to_update.append(semifinal)
+    elif match.type == Config.QUARTERFINAL_2:
+        semifinal: Match = _get_match(match, Config.SEMIFINAL_1)
+        semifinal.player2 = match.winner
+        matches_to_update.append(semifinal)
+    elif match.type == Config.QUARTERFINAL_3:
+        semifinal: Match = _get_match(match, Config.SEMIFINAL_2)
+        semifinal.player1 = match.winner
+        matches_to_update.append(semifinal)
+    elif match.type == Config.QUARTERFINAL_4:
+        semifinal: Match = _get_match(match, Config.SEMIFINAL_2)
+        semifinal.player2 = match.winner
+        matches_to_update.append(semifinal)
+    elif match.type == Config.SEMIFINAL_1:
+        final: Match = _get_match(match, Config.FINAL)
+        final.player1 = match.winner
+        matches_to_update.append(final)
+    elif match.type == Config.SEMIFINAL_2:
+        final: Match = _get_match(match, Config.FINAL)
+        final.player2 = match.winner
+        matches_to_update.append(final)
+    Match.objects.save_all(matches_to_update)
+    update_standings(match)
+
+
+def _get_matches(match: Match, type1: str, type2: str) -> List[Match]:
+    query = Match.objects.filter_by(season=match.season, week=match.week, region=match.region, group=match.group)
+    matches: List[Match] = query.filter("type", Match.objects.IN, [type1, type2]).get()
+    match_type1: Match = matches[0] if matches[0].type == type1 else matches[1]
+    match_type2: Match = matches[0] if matches[0].type == type2 else matches[1]
+    return [match_type1, match_type2]
+
+
+def _get_match_from_group(match: Match, match_type: str) -> Match:
+    query = Match.objects.filter_by(season=match.season, week=match.week, region=match.region, group=match.group)
+    match_doc: Match = query.filter_by(type=match_type).first()
+    return match_doc
+
+
+def _get_match(match: Match, match_type: str) -> Match:
+    query = Match.objects.filter_by(season=match.season, week=match.week, region=match.region)
+    match_doc: Match = query.filter_by(type=match_type).first()
+    return match_doc
+
+
+def get_next_match(season: str, week: int) -> Match:
+    match: Match = Match.objects.filter_by(season=season, week=week, winner=str()).order_by("match_id").first()
+    return match
+
+
+def prepare_for_next_week() -> None:
+    user: User = User.objects.first()
+    user.week += 1
+    user.save()
+    create_groups(user.season, user.week)
+    create_initial_matches(user.season, user.week)
+    create_tbd_matches(user.season, user.week)
+    return
+
+
 def create_groups(season: str, week: int) -> None:
     if not (1 <= week <= 7):
         return
@@ -120,6 +220,28 @@ def _create_tbd_match(season: str, week: int, region: str, match_type: str, inde
 
 def _generate_match_id(match_index: int) -> str:
     return f"{Config.SEASON2021_1_TAG}-{match_index:003}"
+
+
+def reset_season(season: str):
+    Group.objects.filter_by(season=season).delete()
+    Match.objects.filter_by(season=season).delete()
+    players = Player.objects.filter_by(season=season).get()
+    for region in Config.REGIONS:
+        region_players = [player for player in players if player.region == region]
+        region_players.sort(key=lambda player: player.name.upper())
+        for index, player in enumerate(region_players):
+            player.rank = index + 1
+            player.points = 0
+    Player.objects.save_all(players)
+    user = User.objects.first()
+    user.week = 1
+    user.season = season
+    user.save()
+    create_groups(season, 1)
+    create_initial_matches(season, 1)
+    create_tbd_matches(season, 1)
+    print(f"{season} reset.")
+    return
 
 
 @login.user_loader
